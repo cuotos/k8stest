@@ -16,6 +16,6 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: range
+    path: webtest
     repoURL: https://github.com/cuotos/k8stest
     targetRevision: kind
