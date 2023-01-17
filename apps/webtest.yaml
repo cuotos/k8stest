@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: range-discovery
+  name: webtest
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -12,7 +12,7 @@ spec:
     syncOptions:
       - CreateNamespace=true
   destination:
-    namespace: range-discovery
+    namespace: webtest
     server: https://kubernetes.default.svc
   project: default
   source:

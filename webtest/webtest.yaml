@@ -1,24 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: range-discovery
+  name: webtest
   labels:
-    app: range-discovery
+    app: webtest
     env: staging
 spec:
   selector:
     matchLabels:
-      app: range-discovery
+      app: webtest
       env: staging
   replicas: 1
   template:
     metadata:
       labels:
-        app: range-discovery
+        app: webtest
         env: staging
     spec:
-      imagePullSecrets:
-        - name: ecrcreds
       containers:
         - name: web
           image: cuotos/webtester
@@ -29,10 +27,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: range-discovery
+  name: webtest
 spec:
   selector:
-    app: range-discovery
+    app: webtest
     env: staging
   ports:
     - name: http
@@ -42,19 +40,19 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: range-discovery
+  name: webtest
   #annotations:
   #  nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   ingressClassName: nginx
   rules:
-    - host: range.dev.localhost
+    - host: web.dev.localhost
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: range-discovery
+                name: webtest
                 port:
                   name: http
