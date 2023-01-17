@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: pod-test
-  namespace: danp-test
 spec:
   replicas: 1
   selector:
@@ -11,7 +10,6 @@ spec:
   template:
     metadata:
       name: test-pod-one
-      namespace: danp-test
       labels:
         app: danp-test-pod-one
     spec:

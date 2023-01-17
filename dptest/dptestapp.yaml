@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dptest
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  syncPolicy: 
+    automated: 
+      prune: true
+  destination:
+    namespace: danp-test
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: dptest
+    repoURL: https://github.com/cuotos/k8stest
+    targetRevision: kind
