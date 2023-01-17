@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: range-discovery
+  labels:
+    app: range-discovery
+    env: staging
+spec:
+  selector:
+    matchLabels:
+      app: range-discovery
+      env: staging
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: range-discovery
+        env: staging
+    spec:
+      imagePullSecrets:
+        - name: ecrcreds
+      containers:
+        - name: web
+          image: 979943117323.dkr.ecr.eu-west-1.amazonaws.com/range-discovery:a906ab1448627638d16cc05759097a6a9a6a9244
+          ports:
+            - name: http
+              containerPort: 80
+          env:
+            - name: SECRET_KEY_BASE
+              value: asdasdasdasd
+            - name: DD_SERVICE
+              value: range-discovery
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: range-discovery
+spec:
+  selector:
+    app: range-discovery
+    env: staging
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: range-discovery
+  #annotations:
+  #  nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: range.dev.localhost
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: range-discovery
+                port:
+                  name: http
