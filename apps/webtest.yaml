@@ -12,7 +12,7 @@ spec:
     syncOptions:
       - CreateNamespace=true
   destination:
-    namespace: webtest
+    namespace: central
     server: https://kubernetes.default.svc
   project: default
   source:

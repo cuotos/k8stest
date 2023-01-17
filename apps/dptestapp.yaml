@@ -10,7 +10,7 @@ spec:
     automated: 
       prune: true
   destination:
-    namespace: danp-test
+    namespace: central
     server: https://kubernetes.default.svc
   project: default
   source:
