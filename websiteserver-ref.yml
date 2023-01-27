@@ -28,7 +28,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: website
+  name: website-server
 spec:
   ports:
     - name: http
