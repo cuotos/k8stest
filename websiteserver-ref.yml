@@ -18,11 +18,10 @@ spec:
     spec:
       containers:
         - name: web
-          image: cuotos/webtester:4
-          imagePullPolicy: Always
+          image: gcr.io/kuar-demo/kuard-amd64:1
           ports:
             - name: http
-              containerPort: 5117
+              containerPort: 8080
       serviceAccountName: website
 ---
 apiVersion: v1
