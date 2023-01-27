@@ -8,7 +8,7 @@ spec:
   selector:
     matchLabels:
       app: website-server
-  replicas: 3
+  replicas: 30
   template:
     metadata:
       labels:
