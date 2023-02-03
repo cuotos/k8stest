@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: website
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: website-server
+  namespace: website
+  labels:
+    app: website-server
+spec:
+  selector:
+    matchLabels:
+      app: website-server
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: website-server
+      annotations:
+        prometheus.io/scrape: "true"
+    spec:
+      containers:
+        - name: web
+          image: gcr.io/kuar-demo/kuard-amd64:1
+          ports:
+            - name: http
+              containerPort: 8080
+      serviceAccountName: website
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: website-server
+  namespace: website
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+  selector:
+    app: website-server
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: website
+  namespace: website
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: test.dev.localhost
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: website-server
+            port:
+              number: 80
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: website
+  namespace: website
+  
