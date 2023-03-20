@@ -1,0 +1,138 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: website-server-main
+  labels:
+    app: website-server
+    track: stable
+spec:
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 100%
+  selector:
+    matchLabels:
+      app: website-server
+      track: stable
+  replicas: 2
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: website-server
+        track: stable
+      annotations:
+        prometheus.io/scrape: "true"
+    spec:
+      containers:
+        - name: web
+          image: cuotos/webtester
+          ports:
+            - name: http
+              containerPort: 5117
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: website-server-canary
+  labels:
+    app: website-server
+    track: canary
+spec:
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 100%
+  selector:
+    matchLabels:
+      app: website-server
+      track: canary
+  replicas: 2
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: website-server
+        track: canary
+      annotations:
+        prometheus.io/scrape: "true"
+    spec:
+      containers:
+        - name: web
+          image: cuotos/webtester
+          ports:
+            - name: http
+              containerPort: 5117
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: website-server
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+  selector:
+    app: website-server
+    track: stable
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: website-server-canary
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+  selector:
+    app: website-server
+    track: canary
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: website
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: echo.k8s.bloomdev.org
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: website-server
+            port:
+              number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: website-canary
+  annotations:
+    nginx.ingress.kubernetes.io/canary: "true"
+    nginx.ingress.kubernetes.io/canary-weight: "50"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: echo.k8s.bloomdev.org
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: website-server-canary
+            port:
+              number: 80
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: basic-auth
+type: Opaque
+data:
+  auth: dGVzdGluZzokYXByMSRNWFhVcGNYOSR2WEQvVFpnZmhhUjhZbklDbGdrb1cwCg==

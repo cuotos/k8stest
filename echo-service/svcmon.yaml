@@ -1,0 +1,12 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: echo-service
+  labels:
+    release: prom
+spec:
+  selector:
+    matchLabels:
+      app: website-server
+  endpoints:
+    - port: http
