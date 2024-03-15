@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dptest1
+  namespace: dptest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dptest1
+  template:
+    metadata:
+      labels:
+        app: dptest1
+    spec:
+      containers:
+      - name: webtester 
+        image: cuotos/webtester

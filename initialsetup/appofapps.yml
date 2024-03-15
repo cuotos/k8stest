@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: apps
+  namespace: argocd
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+  project: default # you can change the project name
+  source:
+    path: apps/
+    repoURL: https://github.com/cuotos/k8stest
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: true
